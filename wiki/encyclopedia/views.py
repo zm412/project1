@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django import forms
+from django.utils.safestring import mark_safe
 import markdown
 
 from . import util
@@ -36,18 +37,39 @@ def random(request):
         "entries": util.list_entries()
     })
 
-def arcticle(request, title):
+
+def article(request, title):
     text = util.get_entry(title)
     md = markdown.Markdown()
-    article = md.convert(text)
+    article = mark_safe(md.convert(text))
+    print(text)
+    print(article)
 
     if article:
         return render(request, 'encyclopedia/article.html', {
-            "title": title,
             "article": article
         })
     else:
         return HttpResponse("Error")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
