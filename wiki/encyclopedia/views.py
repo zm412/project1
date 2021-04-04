@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.shortcuts import redirect
 from django import forms
 from django.utils.safestring import mark_safe
 from django.http import HttpResponse
@@ -63,20 +64,28 @@ def search(request):
             title = form_data.cleaned_data['q']
             text = util.get_entry(title)
             if text:
-                md = markdown.Markdown()
-                article = mark_safe(md.convert(text))
-                return render(request, 'encyclopedia/search.html', {
-                    "search_result": article,
-                })
+                return redirect('../'+title+'/')
             else:
+                list_n = util.list_entries()
+                print(list_n)
+                filtered_list = filter_list(list_n, title)
                 return render(request, 'encyclopedia/search.html', {
-                    "article": 'Wiki does not have an arcticle with this name'
+                    "filtered" : filtered_list
                 })
         else:
             return render(request, 'encyclopedia/index.html')
     else:
         return render(request, 'encyclopedia/index.html')
 
+
+def filter_list(listN, title):
+    outList = []
+    for s in listN:
+        elemLow = s.lower()
+        titleLow = title.lower()
+        if(elemLow.find(titleLow) != -1):
+            outList.append(s)
+    return  outList
 
 
 

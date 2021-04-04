@@ -6,6 +6,15 @@
 
 {% block body %}
     <h1>Search result</h1>
-    {{ search_result }}
+
+    <ul>
+        {% for entry in filtered %}
+          <li>
+            <a href={{entry}}>
+            {{ entry }}
+            </a>
+          </li>
+        {% endfor %}
+    </ul>
     
 {% endblock %}
