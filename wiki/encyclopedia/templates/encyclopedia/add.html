@@ -6,6 +6,7 @@
 
 {% block body %}
     <h1>Add article</h1>
+    <p>{{ comment }}</p>
     <form action="{% url 'add'%}" method='post'>
       {% csrf_token %}
 

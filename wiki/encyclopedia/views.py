@@ -9,7 +9,7 @@ from . import util
 
 class NewItemCreate(forms.Form):
     title = forms.CharField()
-    article = forms.CharField()
+    article = forms.CharField(widget=forms.Textarea)
 
 
 class SearchArticle(forms.Form):
@@ -26,15 +26,23 @@ def index(request):
 def add(request):
     if request.method == 'POST':
         newArticle = NewItemCreate(request.POST)
-        title = newArticle.cleaned_data['title']
-        content = newArticle.cleaned_data['article']
-        util.save_entry(title, content)
-        return render(request, 'encyclopedia/index.html', {
-            "entries": util.list_entries()
-        })
+        if newArticle.is_valid():
+            title = newArticle.cleaned_data['title']
+            content = newArticle.cleaned_data['article']
+            util.save_entry(title, content)
+            return render(request, 'encyclopedia/add.html', {
+                "form": NewItemCreate(),
+                "comment": "Article added"
+            })
+        else:
+            return render(request, 'encyclopedia/add.html', {
+                "form": NewItemCreate(),
+                "comment": "not valid"
+            })
     else:
         return render(request, 'encyclopedia/add.html', {
-            "form": NewItemCreate()
+            "form": NewItemCreate(),
+            "comment": "add new?"
         })
 
 def random(request):
