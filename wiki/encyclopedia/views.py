@@ -28,12 +28,20 @@ def add(request):
         newArticle = NewItemCreate(request.POST)
         if newArticle.is_valid():
             title = newArticle.cleaned_data['title']
-            content = newArticle.cleaned_data['article']
-            util.save_entry(title, content)
-            return render(request, 'encyclopedia/add.html', {
-                "form": NewItemCreate(),
-                "comment": "Article added"
-            })
+            if  not util.get_entry(title):
+                content = newArticle.cleaned_data['article']
+                util.save_entry(title, content)
+                return render(request, 'encyclopedia/add.html', {
+                    "form": NewItemCreate(),
+                    "comment": "Article added",
+                    "title": title
+                })
+            else:
+                return render(request, 'encyclopedia/add.html', {
+                    "form": NewItemCreate(),
+                    "comment": "Sorry, article with this title already exists",
+                    "title": title
+                })
         else:
             return render(request, 'encyclopedia/add.html', {
                 "form": NewItemCreate(),
@@ -57,6 +65,7 @@ def article(request, title):
         md = markdown.Markdown()
         article = mark_safe(md.convert(text))
         return render(request, 'encyclopedia/article.html', {
+            "title":title,
             "article": article
         })
     else:
@@ -84,6 +93,41 @@ def search(request):
             return render(request, 'encyclopedia/index.html')
     else:
         return render(request, 'encyclopedia/index.html')
+
+
+
+def update(request, title):
+    if(request.method == 'POST'):
+        updated_form = NewItemCreate(request.POST)
+        if(updated_form.is_valid()):
+            content = updated_form.cleaned_data['article']
+            if util.get_entry(title):
+                util.save_entry(title, content)
+                return render(request, 'encyclopedia/update.html', {
+                        "form": f,
+                        "comment": "Article changed",
+                        "title": title
+                    })
+            else:
+                return render(request, 'encyclopedia/update.html', {
+                        "comment": "If you want to create new article, please use option 'Add article'",
+                        "title": title
+                    })
+        else:
+            return render(request, 'encyclopedia/update.html', {
+                    "form": f,
+                    "comment": "Data is not valid",
+                    "title": title
+                })
+
+    else:
+        article = util.get_entry(title)
+        f = NewItemCreate(initial={"title": title, "article": article})
+        return render(request, 'encyclopedia/update.html', {
+                "form": f,
+                "title": title
+            })
+
 
 
 def filter_list(listN, title):
