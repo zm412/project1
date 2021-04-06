@@ -97,16 +97,19 @@ def search(request):
 
 
 def update(request, title):
-    if(request.method == 'POST'):
+    article = util.get_entry(title)
+    f = NewItemCreate(initial={"title": title, "article": article})
+    if request.method == 'POST':
         updated_form = NewItemCreate(request.POST)
         if(updated_form.is_valid()):
-            content = updated_form.cleaned_data['article']
             if util.get_entry(title):
+                content = updated_form.cleaned_data['article']
                 util.save_entry(title, content)
-                return render(request, 'encyclopedia/update.html', {
-                        "form": f,
+                updated_article = util.get_entry(title)
+                return render(request, 'encyclopedia/article.html', {
                         "comment": "Article changed",
-                        "title": title
+                        "title": title,
+                        "article": updated_article,
                     })
             else:
                 return render(request, 'encyclopedia/update.html', {
@@ -120,12 +123,9 @@ def update(request, title):
                     "title": title
                 })
 
-    else:
-        article = util.get_entry(title)
-        f = NewItemCreate(initial={"title": title, "article": article})
+    else :
         return render(request, 'encyclopedia/update.html', {
                 "form": f,
-                "title": title
             })
 
 

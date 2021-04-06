@@ -6,9 +6,9 @@
 {% endblock %}
 
 {% block body %}
-  <form action='../' method='post'>
+  <form action='' method='post'>
     {% csrf_token %}
-    {{ update_form }}
+    {{ form }}
       <input type='submit' value='Save'>
   </form>
 
