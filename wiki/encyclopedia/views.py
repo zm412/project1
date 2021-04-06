@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from django import forms
 from django.utils.safestring import mark_safe
 from django.http import HttpResponse
+from random import randint
 import re
 import markdown
 
@@ -55,9 +56,11 @@ def add(request):
         })
 
 def random(request):
-    return render(request, "encyclopedia/random.html", {
-        "entries": util.list_entries()
-    })
+    list_arts = util.list_entries()
+    length = len(list_arts)
+    random_num = randint(0, length - 1)
+    random_title = list_arts[random_num]
+    return redirect(random_title+'/')
 
 
 def article(request, title):
