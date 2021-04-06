@@ -63,9 +63,9 @@ def random(request):
 def article(request, title):
     text = util.get_entry(title)
     if text:
-       md = markdown.Markdown()
-       article = mark_safe(md.convert(text))
-       #article = mark_safe(convertToHTML(text))
+       #md = markdown.Markdown()
+       #article = mark_safe(md.convert(text))
+       article = mark_safe(convertToHTML(text))
        return render(request, 'encyclopedia/article.html', {
             "title":title,
             "article": article
@@ -139,12 +139,12 @@ def filter_list(listN, title):
 
 
 def convertToHTML(text):
-    n = re.sub(r'#\s(\S+)\s', r'<h1>\1</h1>', text)
-    n = re.sub(r'\*\s(\S+)\s', r'<li>\1</li>', n)
-    n = re.sub(r'((?:<li>[^\n]+</li>\s)+)', r'<ul>\1</ul>', n)
+    print(text)
+    n = re.sub(r'\#(.+[^\n])', r'<h1>\1</h1>', text)
+    n = re.sub(r'\*\s([^\n]+)', r'<li>\1</li>', n)
+    print(n)
     n = re.sub(r'\*{2}(\S+)\*{2}', r'<strong>\1</strong>', n)
     n = re.sub(r'\[([^\]]+)\]\(([^\)]+)\)', r'<a href="\2">\1</a>', n)
-    print(n)
     return n
 
 
