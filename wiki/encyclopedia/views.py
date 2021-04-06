@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 from django.http import HttpResponse
 from random import randint
 import re
-import markdown
+#import markdown
 
 from . import util
 
@@ -13,11 +13,8 @@ class NewItemCreate(forms.Form):
     title = forms.CharField()
     article = forms.CharField(widget=forms.Textarea)
 
-
 class SearchArticle(forms.Form):
-    q = forms.CharField(label='')
-
-
+    q = forms.CharField(label = '')
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -129,8 +126,6 @@ def update(request, title):
                 "form": f,
             })
 
-
-
 def filter_list(listN, title):
     outList = []
     for s in listN:
@@ -140,13 +135,11 @@ def filter_list(listN, title):
             outList.append(s)
     return  outList
 
-
 def convertToHTML(text):
     print(text)
     n = re.sub(r'\#(.+[^\n])', r'<h1>\1</h1>', text)
-    n = re.sub(r'\*\s([^\n]+)', r'<li>\1</li>', n)
-    print(n)
-    n = re.sub(r'\*{2}(\S+)\*{2}', r'<strong>\1</strong>', n)
+    n = re.sub(r'(?<=[^\*{2,}])\*\s([^\n]+)', r'<li>\1</li>', n)
+    n = re.sub(r'\*{2}([^\n]+?)\*{2}', r'<strong>\1</strong>', n)
     n = re.sub(r'\[([^\]]+)\]\(([^\)]+)\)', r'<a href="\2">\1</a>', n)
     return n
 
