@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from django import forms
 from django.utils.safestring import mark_safe
 from django.http import HttpResponse
+import re
 import markdown
 
 from . import util
@@ -62,9 +63,10 @@ def random(request):
 def article(request, title):
     text = util.get_entry(title)
     if text:
-        md = markdown.Markdown()
-        article = mark_safe(md.convert(text))
-        return render(request, 'encyclopedia/article.html', {
+       md = markdown.Markdown()
+       article = mark_safe(md.convert(text))
+       #article = mark_safe(convertToHTML(text))
+       return render(request, 'encyclopedia/article.html', {
             "title":title,
             "article": article
         })
@@ -106,11 +108,7 @@ def update(request, title):
                 content = updated_form.cleaned_data['article']
                 util.save_entry(title, content)
                 updated_article = util.get_entry(title)
-                return render(request, 'encyclopedia/article.html', {
-                        "comment": "Article changed",
-                        "title": title,
-                        "article": updated_article,
-                    })
+                return redirect('../')
             else:
                 return render(request, 'encyclopedia/update.html', {
                         "comment": "If you want to create new article, please use option 'Add article'",
@@ -140,8 +138,14 @@ def filter_list(listN, title):
     return  outList
 
 
-
-
+def convertToHTML(text):
+    n = re.sub(r'#\s(\S+)\s', r'<h1>\1</h1>', text)
+    n = re.sub(r'\*\s(\S+)\s', r'<li>\1</li>', n)
+    n = re.sub(r'((?:<li>[^\n]+</li>\s)+)', r'<ul>\1</ul>', n)
+    n = re.sub(r'\*{2}(\S+)\*{2}', r'<strong>\1</strong>', n)
+    n = re.sub(r'\[([^\]]+)\]\(([^\)]+)\)', r'<a href="\2">\1</a>', n)
+    print(n)
+    return n
 
 
 
