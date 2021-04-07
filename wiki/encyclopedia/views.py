@@ -29,7 +29,9 @@ def add(request):
             title = newArticle.cleaned_data['title']
             if  not util.get_entry(title):
                 content = newArticle.cleaned_data['article']
-                util.save_entry(title, content)
+                full_article = '#' + title + '\n' + content
+                print (full_article)
+                util.save_entry(title, full_article)
                 return render(request, 'encyclopedia/add.html', {
                     "form": NewItemCreate(),
                     "comment": "Article added",
