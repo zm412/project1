@@ -9,5 +9,5 @@ urlpatterns = [
     path("random", views.random, name="random"),
     path("search/", views.search, name="search"),
     path("<str:title>/update/", views.update, name="update"),
-    path("<str:title>/", views.article)
+    path("<str:title>/", views.article, name='article')
 ]

@@ -6,7 +6,10 @@
 
 {% block body %}
     <h1>Add article</h1>
-    <p>{{ comment }}</p>
+    <span style="{{ style }}">{{ comment }}</span>
+      {% if exist_data %}
+        <a href="{% url 'article' title=exist_data %}">({{ exist_data }})</a>
+      {% endif %}
     <form action="{% url 'add'%}" method='post'>
       {% csrf_token %}
 

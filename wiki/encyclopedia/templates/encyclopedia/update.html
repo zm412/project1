@@ -6,11 +6,19 @@
 {% endblock %}
 
 {% block body %}
-  <form action='' method='post'>
-    {% csrf_token %}
-    {{ form }}
+
+  <h1 style="font-weight: bold;">{{ title }}</h1>
+
+  {% if comment %}
+  <span style="{{style}}">{{ comment }}</span>
+  {% endif %}
+
+    <form action='' method='post'>
+      {% csrf_token %}
+      {{ form }}
+      <br><br>
       <input type='submit' value='Save'>
-  </form>
+    </form>
 
 
 

@@ -10,7 +10,7 @@
     <ul>
         {% for entry in filtered %}
           <li>
-            <a href='../{{entry}}'>
+            <a href="{% url 'article' title=entry %}">
             {{ entry }}
             </a>
           </li>
